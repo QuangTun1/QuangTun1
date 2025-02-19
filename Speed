@@ -1,0 +1,87 @@
+-- Create a ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "SpeedGUI"
+gui.Parent = game.Players.LocalPlayer.PlayerGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0.5, -125, 0.5, -100)  -- Đặt giữa màn hình
+frame.BackgroundColor3 = Color3.fromRGB(85, 255, 255)
+frame.BorderSizePixel = 3
+frame.Parent = gui
+
+-- Tạo Label để hiển thị tên người tạo "QuangTun"
+local creatorLabel = Instance.new("TextLabel")
+creatorLabel.Size = UDim2.new(0, 200, 0, 15)
+creatorLabel.Position = UDim2.new(0, -10, 0, 1)
+creatorLabel.Text = "Created by:🇻🇳QuangTun🇻🇳"
+creatorLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+creatorLabel.BackgroundTransparency = 1
+creatorLabel.TextScaled = true
+creatorLabel.Parent = frame
+
+-- Create a TextBox
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(0, 150, 0, 30)
+textBox.Position = UDim2.new(0.5, -75, 0.2, 0)
+textBox.Text = "!Nhập số tốc độ!"
+textBox.Parent = frame
+
+-- Create a TextButton
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 100, 0, 30)
+button.Position = UDim2.new(0.5, -50, 0.7, 0)
+button.Text = "!Bắt Đầu!"
+button.Parent = frame
+
+-- Function to update walk speed
+local function updateWalkSpeed()
+	local speedValue = tonumber(textBox.Text)
+	if speedValue then
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speedValue
+	end
+end
+
+-- Tạo khả năng kéo GUI
+local dragging = false
+local dragStart, startPos
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+	end
+end)
+
+frame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if dragging then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+
+-- Bind the button click event
+button.MouseButton1Click:Connect(updateWalkSpeed)
+
+-- Hàm thay đổi màu của GUI
+local function changeGuiColor()
+	local randomColor = Color3.fromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
+	frame.BackgroundColor3 = randomColor
+end
+
+-- Thay đổi màu GUI liên tục sau mỗi 3 giây
+while true do
+	wait(0.1)
+	changeGuiColor()
+end
+
+-- Bind the button click event
+button.MouseButton1Click:Connect(updateWalkSpeed)
